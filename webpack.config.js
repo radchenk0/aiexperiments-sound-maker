@@ -16,43 +16,78 @@
 
 const webpack = require('webpack');
 
-const prod = process.argv.length === 3 && (process.argv[2] === '-p')
+const prod = process.argv.length === 3 && process.argv[2] === '-p';
 
 module.exports = {
-	entry: {
-		Main:'./src/FeatureTest'
-	},
-	output: {
-		filename: './build/[name].js',
-		chunkFilename: './build/[id].js',
-		sourceMapFilename : '[file].map',
-	},
-	resolve: {
-		modules : ['node_modules', 'src', 'node_modules/tone', './', './third_party/'],
-	},
-	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				exclude: /(node_modules|Tone\.js)/,
-				loader: 'babel-loader',
-				query: {
-					presets: ['es2015']
-				}
-			},
-			{
-				test: /(\.scss)$/,
-				loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
-			},
-			{
-				test: /(\.css)$/,
-				loader: 'style-loader!css-loader!autoprefixer-loader'
-			},
-			{
-				test: /\.(png|gif|svg)$/,
-				loader: 'url-loader',
-			}
-		]
-	},
-	devtool: prod ? '' : '#eval-source-map'
+  entry: {
+    Main: './src/FeatureTest',
+  },
+  output: {
+    filename: './build/[name].js',
+    chunkFilename: './build/[id].js',
+    sourceMapFilename: '[file].map',
+  },
+  resolve: {
+    modules: [
+      'node_modules',
+      'src',
+      'node_modules/tone',
+      './',
+      './third_party/',
+    ],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|Tone\.js)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', { targets: 'defaults' }]],
+          },
+        },
+      },
+      //   loader: 'babel-loader',
+      //   // query: {
+      //   //   presets: ['es2015'],
+      //   // },
+      // },
+
+      {
+        test: /\.scss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          'style-loader',
+          // Translates CSS into CommonJS
+          'css-loader',
+          // Compiles Sass to CSS
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          'style-loader',
+          // Translates CSS into CommonJS
+          'css-loader',
+        ],
+      },
+      // {
+      // 	test: /(\.scss)$/,
+      // 	loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
+      // },
+      // {
+      // 	test: /(\.css)$/,
+      // 	loader: 'style-loader!css-loader!autoprefixer-loader'
+      // },
+      {
+        test: /\.(png|gif|svg)$/,
+        loader: 'url-loader',
+      },
+    ],
+  },
+  mode: 'production',
+  // devtool: prod ? '' : '#eval-source-map',
 };
